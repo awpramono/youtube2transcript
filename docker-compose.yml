@@ -1,0 +1,11 @@
+services:
+  youtube2transcript:
+    build: .
+    image: youtube2transcript:latest
+    container_name: youtube2transcript
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production

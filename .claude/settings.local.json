@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "PowerShell(node --version)",
+      "PowerShell(npm --version)",
+      "PowerShell(docker --version)",
+      "Bash(docker build *)",
+      "PowerShell(docker info 2>&1)",
+      "PowerShell(wsl -l -v)",
+      "PowerShell(wsl -d Ubuntu-24.04 -- bash -lc \"node --version; npm --version\")"
+    ]
+  }
+}
