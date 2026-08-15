@@ -1,7 +1,6 @@
 services:
   youtube2transcript:
     build: .
-    image: youtube2transcript:latest
     container_name: youtube2transcript
     restart: unless-stopped
     ports:
