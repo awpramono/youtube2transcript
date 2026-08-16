@@ -1,6 +1,30 @@
 import { fetchTranscript } from "youtube-transcript-plus";
 import { extractVideoId } from "../utils/videoId";
 
+const NAMED_ENTITIES: Record<string, string> = {
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+  "#39": "'",
+  nbsp: " ",
+};
+
+function decodeHtmlEntities(text: string): string {
+  return text.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (match, entity: string) => {
+    if (entity[0] === "#") {
+      const codePoint =
+        entity[1] === "x" || entity[1] === "X"
+          ? parseInt(entity.slice(2), 16)
+          : parseInt(entity.slice(1), 10);
+      return Number.isNaN(codePoint) ? match : String.fromCodePoint(codePoint);
+    }
+    const lower = entity.toLowerCase();
+    return lower in NAMED_ENTITIES ? NAMED_ENTITIES[lower] : match;
+  });
+}
+
 export interface TranscriptSegment {
   text: string;
   offset: number;
@@ -33,7 +57,7 @@ export async function getTranscriptForUrl(
     const raw = await fetchTranscript(videoId, lang ? { lang } : undefined);
 
     const segments: TranscriptSegment[] = raw.map((item) => ({
-      text: item.text,
+      text: decodeHtmlEntities(item.text),
       offset: item.offset,
       duration: item.duration,
       lang: item.lang,
